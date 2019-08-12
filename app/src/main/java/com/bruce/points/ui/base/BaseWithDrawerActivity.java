@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -12,8 +11,11 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bruce.points.R;
+import com.google.android.material.navigation.NavigationView;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.concurrent.TimeUnit;
@@ -24,28 +26,29 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
-/**
- * author：HuaZhongWei
- * date：2019/8/12
- * description： 基类
- **/
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseWithDrawerActivity extends AppCompatActivity {
 
     protected CompositeDisposable mCompositeDisposable;
     private FrameLayout mAppContainer;
 
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
     private Unbinder mUnbinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.activity_base_with_drawer);
         mAppContainer = findViewById(R.id.fl_all_container);
+        mDrawerLayout = findViewById(R.id.dl_base_drawer);
+        mNavigationView = findViewById(R.id.nv_base_navigation);
+
         fullScreen();
 
         initTopIcon();
@@ -53,14 +56,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         FrameLayout contentContainer = findViewById(R.id.fl_content_container);
         contentContainer.removeAllViews();
         LayoutInflater.from(this).inflate(getLayoutResId(), contentContainer);
+
         mUnbinder = ButterKnife.bind(this);
 
         initEvent();
     }
 
     private void initTopIcon() {
-        ImageView leftIconView =  findViewById(R.id.iv_top_left);
-        ImageView rightIconView =  findViewById(R.id.iv_top_right);
+        ImageView leftIconView = findViewById(R.id.iv_top_left);
+        ImageView rightIconView = findViewById(R.id.iv_top_right);
 
         TopIconConfig topIconConfig = getTopIconConfig();
         if (topIconConfig == null) {
@@ -141,6 +145,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public void openDrawer() {
+        if (!mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.openDrawer(GravityCompat.END);
+        }
+    }
+
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.END);
+    }
+
+
     public void addDisposable(Disposable disposable) {
         if (mCompositeDisposable == null) {
             mCompositeDisposable = new CompositeDisposable();
@@ -148,21 +163,32 @@ public abstract class BaseActivity extends AppCompatActivity {
         mCompositeDisposable.add(disposable);
     }
 
-    protected void onLeftIconClick() {
-        onBackPressed();
-    }
-
-    private void onRightIconClick() {
-
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public String getVideoPath(int videoId) {
         return "android.resource://" + getApplicationContext().getPackageName() + "/" + videoId;
     }
 
+    protected void onLeftIconClick() {
+        onBackPressed();
+    }
+
+    private void onRightIconClick() {
+        openDrawer();
+    }
+
+
     public abstract int getLayoutResId();
 
     public abstract TopIconConfig getTopIconConfig();
 
     protected abstract void initEvent();
+
 }

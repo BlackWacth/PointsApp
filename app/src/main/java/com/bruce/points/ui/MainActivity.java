@@ -1,105 +1,67 @@
 package com.bruce.points.ui;
 
-import android.os.Bundle;
+import android.content.Intent;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bruce.points.R;
-import com.bruce.points.ui.base.BaseActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.bruce.points.service.ScreenOffService;
+import com.bruce.points.ui.base.BaseWithDrawerActivity;
+import com.bruce.points.ui.base.TopIconConfig;
 
-import android.view.View;
+import java.util.ArrayList;
+import java.util.List;
 
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import butterknife.BindView;
 
-import android.view.MenuItem;
+public class MainActivity extends BaseWithDrawerActivity {
 
-import com.google.android.material.navigation.NavigationView;
+    @BindView(R.id.vp_main_view_pager)
+    ViewPager2 mViewPager;
 
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-    }
+    private List<BlankFragment> mFragmentList;
 
     @Override
     public int getLayoutResId() {
-        return 0;
+        return R.layout.activity_main;
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.END)) {
-            drawer.closeDrawer(GravityCompat.END);
-        } else {
-            super.onBackPressed();
-        }
+    public TopIconConfig getTopIconConfig() {
+        return TopIconConfig.newDefaultWhite();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    protected void initEvent() {
+        mFragmentList = new ArrayList<>();
+        mFragmentList.add(BlankFragment.newInstance(1));
+        mFragmentList.add(BlankFragment.newInstance(2));
+        mFragmentList.add(BlankFragment.newInstance(3));
+        mFragmentList.add(BlankFragment.newInstance(4));
+        mFragmentList.add(BlankFragment.newInstance(5));
+        mViewPager.setAdapter(new FragmentStateAdapter(this) {
+
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                return mFragmentList.get(position);
+            }
+
+
+            @Override
+            public int getItemCount() {
+                return mFragmentList.size();
+            }
+        });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.END);
-        return true;
+    protected void onStart() {
+        super.onStart();
+        startService(new Intent(this, ScreenOffService.class).setAction(Intent.ACTION_SCREEN_OFF));
     }
 }

@@ -10,5 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/iv_top_left"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_menu_camera"/>
+
+        <ImageView
+            android:id="@+id/iv_top_right"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|end"
+            android:src="@drawable/ic_menu_send"/>
+
+    </FrameLayout>
 
 </FrameLayout>
