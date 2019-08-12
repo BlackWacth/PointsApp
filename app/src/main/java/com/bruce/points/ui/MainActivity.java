@@ -3,6 +3,7 @@ package com.bruce.points.ui;
 import android.os.Bundle;
 
 import com.bruce.points.R;
+import com.bruce.points.ui.base.BaseActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -22,8 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,11 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
 //        toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public int getLayoutResId() {
+        return 0;
     }
 
     @Override
