@@ -16,29 +16,43 @@
         android:theme="@style/FullscreenTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.screensaver.ScreensaverActivity"
-            android:launchMode="singleTop" />
-
-        <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name">
+            android:name=".ui.params.ParamsActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.screensaver.ScreensaverActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:launchMode="singleTask" />
+
+
         <service android:name=".service.ScreenOffService" />
 
-        <receiver android:name=".widgets.shortcut.ShortcutAppWidget">
-
+        <receiver android:name=".widgets.shortcut.ShortcutSmallAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/shortcut_widget" />
+                android:resource="@xml/shortcut_widget_small" />
+        </receiver>
+        <receiver android:name=".widgets.shortcut.ShortcutBigAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/shortcut_widget_big" />
         </receiver>
     </application>
 

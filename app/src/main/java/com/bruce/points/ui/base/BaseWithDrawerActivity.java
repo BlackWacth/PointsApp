@@ -1,5 +1,6 @@
 package com.bruce.points.ui.base;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,10 +40,7 @@ public abstract class BaseWithDrawerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_base_with_drawer);
         mAppContainer = findViewById(R.id.fl_all_container);
@@ -176,6 +174,10 @@ public abstract class BaseWithDrawerActivity extends AppCompatActivity {
         return "android.resource://" + getApplicationContext().getPackageName() + "/" + videoId;
     }
 
+    public void startActivity(Class cls) {
+        startActivity(new Intent(this, cls));
+    }
+
     protected void onLeftIconClick() {
         onBackPressed();
     }
@@ -183,7 +185,6 @@ public abstract class BaseWithDrawerActivity extends AppCompatActivity {
     private void onRightIconClick() {
         openDrawer();
     }
-
 
     public abstract int getLayoutResId();
 
